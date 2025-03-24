@@ -11,6 +11,15 @@ public class Adminer {
 	public Adminer() {
 	}
 
+	
+	
+	@Override
+	public String toString() {
+		return "Adminer [adm_id=" + adm_id + ", adm_pw=" + adm_pw + ", adm_name=" + adm_name + "]";
+	}
+
+
+
 	public Adminer(String adm_id, String adm_pw, String adm_name) {
 
 		this.adm_id = adm_id;

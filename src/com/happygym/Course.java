@@ -7,13 +7,33 @@ public class Course {
 	private String courseName; // 과목이름
 	private String teacher; // 과목 강사
 	private String schedule; // 과목 일정
+	private String time; //강좌 시간
+	private String target; //이용대상
 
-	
-	public Course(int courseId, String courseName, String teacher, String schedule) {
+	public Course(int courseId, String courseName, String teacher, String schedule,String time,String target) {
 		this.courseId = courseId;
 		this.courseName = courseName;
+		this.teacher=teacher;
 		this.schedule = schedule;
+		this.time=time;
+		this.target=target;
 
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
 	}
 
 	public int getCourseId() {

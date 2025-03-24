@@ -75,18 +75,21 @@ public class GymExe {
 		return dao.mlogin(id, pw);
 
 	}
-	
+
 	private static Teacher Tlogin(String id, String pw) {
 		return dao.tlogin(id, pw);
 	}
 
+	private static Adminer Alogin(String id, String pw) {
+		return dao.Alogin(id, pw);
+	}
 
 //로그인 출력 메소드
 	private static void handellogin() {
 
 		while (true) {
 			scn.nextLine();
-			
+
 			System.out.println("id >>");
 
 			String id = scn.nextLine();
@@ -96,19 +99,24 @@ public class GymExe {
 			String pw = scn.nextLine();
 
 			Member mem = Mlogin(id, pw);
-			
-			Teacher teacher = Tlogin(id,pw);
-			
+
+			Teacher teacher = Tlogin(id, pw);
+
+			Adminer adminer = Alogin(id, pw);
+
 			if (mem != null) {
 
 				System.out.println(mem.getMem_name() + "회원님, 환영합니다.");
 				entrollStudentMenu();
 				break;
 
-			} else if(teacher != null) {
-				System.out.println(teacher.getT_name()+"강사님, 환영합니다.");
+			} else if (teacher != null) {
+				System.out.println(teacher.getT_name() + "강사님, 환영합니다.");
 				entrollTeacherMenu();
 				break;
+			} else if (adminer != null) {
+				System.out.println(adminer.getAdm_name() + "관리자님 환영합니다.");
+				entrollAdminerMenu();
 			}
 
 			System.out.println("로그인 실패! 다시 시도해주세요.");
@@ -116,6 +124,8 @@ public class GymExe {
 		}
 
 	}
+
+	
 
 	// 수강생모드 메뉴 출력 메소드
 
@@ -154,15 +164,15 @@ public class GymExe {
 
 	}
 
-	public static void entrollStudentMenu() { //회원 메뉴판
+	public static void entrollStudentMenu() { // 회원 메뉴판
 		System.out.println("1.수강신청 2.과목목록 3.장바구니 4.신청내역 5.Q&A");
 		System.out.println("===============================");
 		System.out.println("선택>>");
-		int menu=scn.nextInt();
-		switch(menu){
+		int menu = scn.nextInt();
+		switch (menu) {
 		case 1:
 			System.out.println("희망하는 수강과목 id 입력>>");
-			int id= scn.nextInt();
+			int id = scn.nextInt();
 			break;
 		case 2:
 			break;
@@ -177,12 +187,27 @@ public class GymExe {
 		}
 
 	}
-	
-	public static void entrollTeacherMenu() { //강사 메뉴
-		System.out.println("1.수강과목등록 2.수업 조회 3.Q&A");
+
+	public static void entrollTeacherMenu() { // 등록된 강사의 메뉴
+		System.out.println("1.수업등록 2.수업 조회 3.Q&A");
 		System.out.println("===============================");
 		System.out.println("선택>>");
-		int menu=scn.nextInt();
+		int menu = scn.nextInt();
+		switch (menu) {
+		case 1:
+			System.out.println("수업코드");
+			System.out.println("프로그램명:");
+			System.out.println("시간:");
+			System.out.println("이용일수:");
+			System.out.println("대상:");
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		default:
+			System.out.println("잘못된 선택입니다.");
+		}
 	}
 
 	// 강사모드
@@ -191,14 +216,14 @@ public class GymExe {
 		System.out.println("1.강사등록  2.로그인");
 		System.out.println("===============================");
 		System.out.println("선택>>");
-		int menu= scn.nextInt();
-		if(menu == 2) {
-			
+		int menu = scn.nextInt();
+		if (menu == 2) {
+
 			handellogin();
-			
+
 		} else {
 			scn.nextLine();
-			String t_id="";
+			String t_id = "";
 			while (true) {
 				System.out.println("ID>>");
 				t_id = scn.nextLine();
@@ -206,7 +231,7 @@ public class GymExe {
 					System.out.println("이미 존재하는 아이디 입니다. 다른 아이디 입력해주세요");
 				} else {
 					System.out.println("사용가능한 아이디입니다." + t_id);
-					
+
 					break;
 				}
 
@@ -219,8 +244,8 @@ public class GymExe {
 			System.out.println("전화번호>>");
 			String t_pnum = scn.nextLine();
 			System.out.println("고용날짜(yyyy-mm-dd)>>");
-			String hiredate=scn.nextLine();
-			
+			String hiredate = scn.nextLine();
+
 			Teacher teacher = new Teacher();
 			teacher.setT_id(t_id);
 			teacher.setT_pw(t_pw);
@@ -232,17 +257,76 @@ public class GymExe {
 			} else {
 				System.out.println("강사등록실패");
 			}
-			
+
 		}
-		
+
 	}
 
 	// 관리자 모드
 	public static void AdminerMenu() {
-		handellogin();
+		scn.nextLine();
+		String adminId = "";
+
+		while (true) {
+			System.out.println("ID>>");
+			adminId = scn.nextLine();
+			if (dao.isIdExists(adminId)) {
+				System.out.println("이미 존재하는 아이디 입니다. 다른 아이디 입력해주세요");
+			} else {
+				System.out.println("사용가능한 아이디입니다." + adminId);
+
+				break;
+			}
+		}
+		System.out.println("PW>>");
+		String adminPw = scn.nextLine();
+		System.out.println("이름>>");
+		String adminName = scn.nextLine();
+
+		Adminer adminer = new Adminer();
+		adminer.setAdm_id(adminId);
+		adminer.setAdm_pw(adminPw);
+		adminer.setAdm_name(adminName);
+		if (dao.adminerinsert(adminer)) {
+			handellogin();
+		} else {
+			System.out.println("관리자등록 실패");
+		}
+		
+	}
+	private static void entrollAdminerMenu() {
+		// TODO Auto-generated method stub
+		boolean run = true;
+		while (run) {
+			System.out.println("1.회원관리  2.프로그램관리 3.강사관리 7.종료");
+			System.out.println("===============================");
+			System.out.println("선택>>");
+			int menu = 7;
+			while (true) {
+				try {
+					menu = Integer.parseInt(scn.nextLine());
+					break;
+				} catch (NumberFormatException e) {
+					System.out.println("정수/숫자를 입력해야합니다");
+				}
+				
+			}
+			switch(menu) {
+			case 1://회원관리
+				break;
+			case 2: //수업관리
+				break;
+			case 3: //강사관리
+				break;
+			case 7: //종료
+				run=false;
+			default:
+				System.out.println("잘못선택하셨습니다.");
+			}
+		}
 	}
 
-	public static void main(String[] args) { //메인메소드
+	public static void main(String[] args) { // 메인메소드
 
 		// TODO Auto-generated method stub
 
