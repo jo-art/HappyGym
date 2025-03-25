@@ -82,3 +82,15 @@ WHERE t.tName = '?';
 
 select *
 from tbl_courses;
+
+
+--수강신청 테이블
+create table enrollments(
+ enrollment_id varchar2(50) primary key,
+ MEM_ID VARCHAR2(10),
+ course_id    NUMBER,
+ enrollment_date TIMESTAMP,
+ status VARCHAR(50),
+ FOREIGN KEY (MEM_ID) REFERENCES tbl_member(MEMID),
+ FOREIGN KEY (course_id) REFERENCES tbl_courses(course_id)
+);

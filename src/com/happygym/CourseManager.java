@@ -109,77 +109,60 @@ public class CourseManager {
 		return false;
 	}
 
-	// 목록 프로그램 명으로 조회
-	public Course selectCourseName(String courseName) {
-		Connection conn = getConnect();
-		String sql = "select * from tbl_courses where course_name=?";
-		try {
-			PreparedStatement psmt = conn.prepareStatement(sql);
-			psmt.setString(1, courseName);
-			ResultSet rs = psmt.executeQuery();
-			if (rs.next()) {
-				Course course = new Course();
-				Teacher teacher = new Teacher();
-				course.setCourseId(rs.getInt("course_id"));
-				course.setCourseName(rs.getString("course_name"));
-				course.setTeacher(teacher);
-				course.setSchedule(rs.getString("schedule"));
-				course.setCapacity(rs.getInt("capacity"));
-				course.setTime(rs.getString("time"));
-				course.setTarget(rs.getString("target"));
-				return course;
+	public List<Course> selectCourses(String keyword) {
+	    List<Course> list = new ArrayList<Course>();
+	    Connection conn = getConnect();
+	    
+	    
+	    PreparedStatement psmt = null;
+	    ResultSet rs = null;
 
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return null;
+	    try {
+	        if (keyword != null && !keyword.isEmpty()) {
+	            // 강좌 이름으로 조회
+	        	String  Nsql = "SELECT * FROM tbl_courses WHERE course_name = ?";
+	            psmt = conn.prepareStatement(Nsql);
+	            psmt.setString(1, keyword);
+	        } else if (keyword != null && !keyword.isEmpty()) {
+	            // 강사 이름으로 조회
+	            String sql = "SELECT c.course_id, c.course_name, t.tId, c.schedule, c.time, c.target, c.capacity " +
+	                  "FROM tbl_courses c " +
+	                  "JOIN tbl_teacher t ON c.t_id = t.tId " +
+	                  "WHERE t.tName = ?";
+	            psmt = conn.prepareStatement(sql);
+	            psmt.setString(1, keyword);
+	        } else {
+	            return list; // 둘 다 null 또는 비어있으면 빈 리스트 반환
+	        }
+
+	        rs = psmt.executeQuery();
+	        while (rs.next()) {
+	            Course course = new Course();
+	            // Teacher 객체는 필요하지 않으므로 주석 처리
+	            // Teacher teacher = new Teacher(); 
+	            course.setCourseId(rs.getInt("course_id"));
+	            course.setCourseName(rs.getString("course_name"));
+	            // teacher.setT_id(rs.getString("tId")); // Teacher 정보가 필요할 경우 주석 해제
+	            course.setSchedule(rs.getString("schedule"));
+	            course.setTime(rs.getString("time"));
+	            course.setTarget(rs.getString("target"));
+	            course.setCapacity(rs.getInt("capacity"));
+	            list.add(course);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (psmt != null) psmt.close();
+	            if (conn != null) conn.close(); // conn도 null 체크
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return list;
 	}
 
-	// 목록 강사명으로 조회
-	public List<Course> list(String teacherName) {
-		List<Course> list = new ArrayList<Course>();
-		Connection conn = getConnect();
-
-		String sql = "SELECT c.course_id, c.course_name,c.schedule,c.time,c.target,c.capacity\r\n"
-				+ "FROM tbl_courses c\r\n" + "JOIN tbl_teacher t ON c.t_id = t.tId\r\n" + "WHERE t.tName = '?'";
-		try {
-			PreparedStatement psmt = conn.prepareStatement(sql);
-			psmt.setString(1, teacherName);
-			ResultSet rs = psmt.executeQuery();
-			while (rs.next()) {
-				Course course = new Course();
-				course.setCourseId(rs.getInt("course_id"));
-				course.setCourseName(rs.getString("course_name"));
-				course.setSchedule(rs.getString("schedule"));
-				course.setTime(rs.getString("time"));
-				course.setTarget(rs.getString("target"));
-				course.setCapacity(rs.getInt("capacity"));
-				list.add(course);
-
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return list;
-
-	}
 
 	// 목록 전제초회
 	List<Course> getAllList(String all) {

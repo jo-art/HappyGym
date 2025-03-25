@@ -148,7 +148,17 @@ public class GymExe {
 			break;
 
 		case 2:// 비회원 모드
-
+			System.out.println("1.프로그램신청 2.프로그램조회 3.장바구니 4.신청내역 5.Q&A");
+			System.out.println("===============================");
+			System.out.println("선택>>");
+			menu = scn.nextInt();
+			if (menu == 1 || menu == 3 || menu == 4 || menu == 5) {
+				System.out.println("로그인 후 사용가능합니다.");
+				handellogin();
+			}
+			if (menu == 2) {
+				detaillist();
+			}
 			break;
 
 		case 3: // 회원등록
@@ -266,6 +276,7 @@ public class GymExe {
 			System.out.println("===============================");
 			System.out.println("선택>>");
 			int menu = scn.nextInt();
+			scn.nextLine();
 			switch (menu) {
 			case 1:
 				System.out.println("1.등록 2.수정 3.삭제");
@@ -285,80 +296,92 @@ public class GymExe {
 
 				break;
 			case 2:
+
 				System.out.println("1.목록  2.상세조회");
 				System.out.println("===============================");
 				System.out.println("선택>>");
 				menu = scn.nextInt();
-				if(menu == 1) {
-					list(); //전체 목록 조회
+				if (menu == 1) {
+					list(); // 전체 목록 조회
 				}
-				if(menu ==2) {
+				if (menu == 2) {
 					detaillist(); // 강사 아이디 강사명으로 조회,
 				}
-				//수업조회로직
+				// 수업조회로직
 				break;
 			case 3:
-				//Q&A
+				// Q&A
+				
 				break;
 			case 4:
-				  System.out.println("프로그램을 종료합니다.");
-	                return; // 메서드 종료하여 프로그램 종료
+				System.out.println("프로그램을 종료합니다.");
+				return; // 메서드 종료하여 프로그램 종료
 			default:
 				System.out.println("잘못된 선택입니다.");
 			}
 		}
 
 	}
-//디테일 리스트 다시하기!///////////////////
-	private static void detaillist() {
-		// TODO Auto-generated method stub
-		Course temp = null;
-	    int seqNo = 1;
-		System.out.println("검색>>");
-		String searchment = scn.next();
-		if(searchment.isBlank()) {
-			System.out.println("검색어를 입력하세요");
-		}
-		if(course.getCourseName().equals(searchment)) {
-			System.out.println(course.getCourseName()+" 강사님의 프로그램");
-		    System.out.println("===============================================================");
-		    System.out.println("순번   수업id       수업명     강사id     수업일정    인원     시간    대상");
-		    System.out.println("===============================================================");
-		    List<Course> list = searchList(searchment);
-		    for(Course course:list) {
-		    	if(course!=null) {
-		    		
-		    	}
-		    }
-		}
-	}
 
-	private static void list() {
-	    Course temp = null;
+// 검색어 입력하면 자동으로 수강과목의 내용들 중에 하나를 찾아 출력하는 디테일리스트 
+	private static void detaillist() {
 	    int seqNo = 1;
-	    System.out.println("순번   수업id       수업명     강사id     수업일정    인원     시간    대상");
-	    System.out.println("===============================================================");
-	    
-	    List<Course> list = searchList(""); // 전체 리스트 조회
-	    for (Course course : list) {
-	        if (course != null) {
-	            String output = course.showListAll();
-	            System.out.println(seqNo++ + " " + output);
-	        } else {
-	            System.out.println(seqNo++ + " null course"); // null 처리
+	    scn.nextLine();
+	    System.out.println("검색>>>");
+	    String searchMent = scn.nextLine();
+	    String searchMentWithoutSpace = searchMent.replaceAll("\\s+", ""); // 모든 공백 제거
+
+	    if (searchMentWithoutSpace.isEmpty()) {
+	        System.out.println("검색어를 입력해주세요");
+	        return;
+	    }
+
+	    boolean found = false;
+	    try {
+	        List<Course> list = searchCourse(searchMentWithoutSpace);
+	        if (list.isEmpty()) {
+	            System.out.println("검색결과가 없습니다.");
+	            return;
 	        }
+
+	        System.out.println("순번   수업id       수업명     강사id      수업일정          인원         시간        대상");
+	        System.out.println("==================================================================================");
+	        for (Course course : list) {
+	            String output = course.showListAll();
+	            System.out.println(String.format("%d   %s", seqNo++, output));
+	            found = true;
+	        }
+	    } catch (Exception e) {
+	        System.out.println("검색 중 오류가 발생했습니다: " + e.getMessage());
 	    }
 	}
 
-	//리스트와 리스트 키워드에서 활용할 공통 메소드
-	private static List<Course> searchList(String keyword){
+	private static void list() {
+		Course temp = null;
+		int seqNo = 1;
+		System.out.println("순번   수업id       수업명     강사id      수업일정          인원         시간        대상");
+		System.out.println("==================================================================================");
+		List<Course> list = searchList(""); // 전체 리스트 조회
+		for (Course course : list) {
+			if (course != null) {
+				String output = course.showListAll();
+				System.out.println(seqNo++ + " " + output);
+			} else {
+				System.out.println(seqNo++ + " null course"); // null 처리
+			}
+		}
+	}
+
+	// 리스트와 리스트 키워드에서 활용할 공통 메소드
+	private static List<Course> searchList(String keyword) {
 		List<Course> list = Cdao.getAllList(keyword);
 		return list;
 	}
-//	private static Course searchCourse(String ) {
-//		return Cdao.selectCourseName(courseName);
-//	}
 
+	private static List<Course> searchCourse(String keyword) {
+		// Cdao의 selectCourses 메서드를 호출하여 강좌를 조회
+		return Cdao.selectCourses(keyword);
+	}
 
 	private static void delteCourse() {// 프로그램 삭제 메소드
 		// TODO Auto-generated method stub
@@ -524,6 +547,21 @@ public class GymExe {
 			case 1:// 회원관리
 				break;
 			case 2: // 수업관리
+				System.out.println("1.등록 2.수정 3.삭제");
+				System.out.println("===============================");
+				System.out.println("선택>>");
+				menu = scn.nextInt();
+
+				if (menu == 1) {
+					registerCourse(); // 프로그램 등록 메소드 호출
+				}
+				if (menu == 2) {
+					editCourse(); // 프로그램 수정 메소드 호출
+				}
+				if (menu == 3) {
+					delteCourse(); // 프로그램 삭제 메소드 호출
+				}
+
 				break;
 			case 3: // 강사관리
 				break;
