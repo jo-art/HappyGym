@@ -21,10 +21,10 @@ public class MemberJdbc {
 		String userId = "scott";
 
 		String userPw = "tiger";
-
+		Connection conn=null;
 		try {
 
-			Connection conn = DriverManager.getConnection(url, userId, userPw);
+			 conn = DriverManager.getConnection(url, userId, userPw);
 
 			return conn;
 
@@ -73,6 +73,13 @@ public class MemberJdbc {
 
 			e.printStackTrace();
 
+		}finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return null; // 조회결과 없으면
@@ -105,6 +112,13 @@ public class MemberJdbc {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return false; // 등록 실패
 	}
@@ -139,6 +153,13 @@ public class MemberJdbc {
 
 			e.printStackTrace();
 
+		}finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return null; // 조회결과 없으면
@@ -165,6 +186,13 @@ public class MemberJdbc {
 			// TODO Auto-generated catch block
 
 			e.printStackTrace();
+		}finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}
@@ -173,7 +201,7 @@ public class MemberJdbc {
 	public Adminer Alogin(String id, String pw) {
 		Connection conn = getConnect();
 
-		String sql = "select * from tbl_adminer " + "where adminId=? " + "and adminPw=?";
+		String sql = "select * from tbl_admin " + "where admin_id=? " + "and admin_pw=?";
 
 		try {
 
@@ -188,7 +216,7 @@ public class MemberJdbc {
 			if (rs.next()) {
 
 				
-				Adminer adminer = new Adminer(rs.getString("adminId"), rs.getString("adminPw"), rs.getString("adminName"));
+				Adminer adminer = new Adminer(rs.getString("admin_id"), rs.getString("admin_pw"), rs.getString("admin_name"));
 
 				return adminer;
 
@@ -200,6 +228,13 @@ public class MemberJdbc {
 
 			e.printStackTrace();
 
+		}finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return null; // 조회결과 없으면
@@ -208,7 +243,7 @@ public class MemberJdbc {
 	// 관리자 등록처리
 	public boolean adminerinsert(Adminer admin) {
 		Connection conn = getConnect();
-		String sql = "INSERT INTO tbl_adminer(adminId,adminPw,adminName) VALUES(?,?,?)";
+		String sql = "INSERT INTO tbl_admin(admin_id,admin_pw,admin_name) VALUES(?,?,?)";
 		try {
 			PreparedStatement psmt = conn.prepareStatement(sql);
 			psmt.setString(1, admin.getAdm_id());
@@ -221,6 +256,13 @@ public class MemberJdbc {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}
@@ -231,7 +273,7 @@ public class MemberJdbc {
 		Connection conn = getConnect();
 		String msql = "select memId from tbl_member where memId=?";
 		String tsql = "select tId from tbl_teacher where tId=?";
-		String asql ="select adminId from tbl_adminer where adminId=?";
+		String asql ="select admin_id from tbl_admin where admin_id=?";
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
 		try {
@@ -257,6 +299,13 @@ public class MemberJdbc {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return false;
@@ -280,6 +329,13 @@ public class MemberJdbc {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return list;
 	}
