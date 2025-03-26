@@ -38,7 +38,7 @@ public class CartJdbc {
 			ResultSet rs = psmt.executeQuery();
 			while(rs.next()) {
 				Cart cart = new Cart();
-				cart.setCartid(rs.getInt("CART_ID"));
+				cart.setCartid(rs.getString("CART_ID"));
 				cart.setMemId(rs.getString("MEMBER_ID"));
 				cart.setCourseId(rs.getInt("COURSE_ID"));
 				cart.setAddeddate(rs.getTimestamp("ADDED_DATE"));
@@ -64,7 +64,7 @@ public class CartJdbc {
 				+ "SELECT ?,?,?,? FROM cart where COURSE_ID=?";
 		try {
 			PreparedStatement psmt = conn.prepareStatement(sql);
-			psmt.setInt(1, cart.getCartid());
+			psmt.setString(1, cart.getCartid());
 			psmt.setString(2, cart.getMemId());
 			psmt.setInt(3, cart.getCourseId());
 			psmt.setTimestamp(4, cart.getAddeddate());
@@ -75,6 +75,30 @@ public class CartJdbc {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+	//장바구나 삭제 쿼리
+	public boolean deleteCart(Cart cart) {
+		Connection conn = getConnect();
+		String sql="delete from cart where course_id=?";
+		try {
+			PreparedStatement psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, cart.getCourseId());
+			int r=psmt.executeUpdate();
+			if(r>0) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {

@@ -15,10 +15,11 @@ public class Course {
 	public Course(int courseId) {
 		this.courseId = courseId;
 	}
-	public Course(int courseId, String courseName, Teacher teacher, String schedule,String time,String target,int capacity) {
+	
+	public Course(int courseId, String courseName, String tid, String schedule,String time,String target,int capacity) {
 		this.courseId = courseId;
 		this.courseName = courseName;
-		 this.teacher = new Teacher(); // Teacher 객체 초기화
+		this.tid = tid; // Teacher 객체 초기화
 		this.schedule = schedule;
 		this.time=time;
 		this.target=target;

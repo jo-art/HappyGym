@@ -24,6 +24,14 @@ public class Member {
 	}
 	
 
+	
+	public String showMemList() {
+		return "mem_id=" + mem_id + ", mem_pw=" + mem_pw + ", mem_name=" + mem_name + ", mem_age=" + mem_age
+				+ ", mem_pnum=" + mem_pnum + ", mem_address=" + mem_address + ", mem_height=" + mem_height
+				+ ", mem_weight=" + mem_weight;
+	}
+
+
 	public Member(String m_id, String m_pw) {
 
 		this.mem_id = m_id;

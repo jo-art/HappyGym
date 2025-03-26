@@ -3,24 +3,24 @@ package com.happygym;
 import java.sql.Timestamp;
 
 public class Cart {
-	private int cartid;
+	private String cartid;
 	private String memId;
 	private int courseId;
 	private Timestamp addeddate;
 	public Cart() {
 		
 	}
-	public Cart(int cartid, String memId,int courseId,Timestamp addeddate) {
+	public Cart(String cartid, String memId,int courseId,Timestamp addeddate) {
 		this.cartid =cartid;
 		this.memId=memId;
 		this.courseId=courseId;
-		this.addeddate = addeddate;
+		this.addeddate = new Timestamp(System.currentTimeMillis()); 
 	}
-	public int getCartid() {
+	public String getCartid() {
 		return cartid;
 	}
-	public void setCartid(int cartid) {
-		this.cartid = cartid;
+	public void setCartid(String string) {
+		this.cartid = string;
 	}
 	public String getMemId() {
 		return memId;

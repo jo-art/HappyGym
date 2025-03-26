@@ -90,7 +90,7 @@ public class EnrollmentsJdbc {
 	}
 
    
-	//신쳥내역리스트..
+	//신쳥내역리스트 조회 쿼리
 	public List<Enrollments> getEnrollments(String memID){
 		List<Enrollments> list =new ArrayList<Enrollments>();
 		Connection conn= getConnect();

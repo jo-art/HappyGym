@@ -25,6 +25,8 @@ public class CourseManager {
 		return null;
 
 	}
+	
+	
 
 	// 프로그램 등록
 	public boolean registerCourse(Teacher teacher, Course course) {
@@ -61,7 +63,7 @@ public class CourseManager {
 	}
 
 	// 프로그램 수정
-	public boolean updateCourse(Teacher teacher, Course course) {
+	public boolean updateCourse( Course course) {
 		Connection conn = getConnect();
 		String sql = "UPDATE tbl_courses SET " + "course_name = NVL(?, course_name), " + "t_id = NVL(?, t_id), "
 				+ "schedule = NVL(?, schedule), " + "capacity = NVL(?, capacity), " + "time = NVL(?, time), "
@@ -70,7 +72,7 @@ public class CourseManager {
 		try {
 			PreparedStatement psmt = conn.prepareStatement(sql);
 			psmt.setString(1, course.getCourseName()); // course_name
-			psmt.setString(2, teacher.getT_id()); // t_id
+			psmt.setString(2, course.getTid()); // t_id
 			psmt.setString(3, course.getSchedule()); // schedule
 			psmt.setInt(4, course.getCapacity()); // capacity
 			psmt.setString(5, course.getTime()); // time

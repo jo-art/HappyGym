@@ -21,10 +21,10 @@ public class MemberJdbc {
 		String userId = "scott";
 
 		String userPw = "tiger";
-		Connection conn=null;
+		Connection conn = null;
 		try {
 
-			 conn = DriverManager.getConnection(url, userId, userPw);
+			conn = DriverManager.getConnection(url, userId, userPw);
 
 			return conn;
 
@@ -73,7 +73,7 @@ public class MemberJdbc {
 
 			e.printStackTrace();
 
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -112,7 +112,7 @@ public class MemberJdbc {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -122,32 +122,166 @@ public class MemberJdbc {
 		}
 		return false; // 등록 실패
 	}
-	//로그인한 회원의 아이디 , 이름 가져오기
-	public  Member getMemberFromOjdbc(String memberId) {
-		Member member=null;
+	//선생  정보 수정 쿼리
+	
+	
+	// 회원 정보 수정 쿼리
+	public boolean updateMemberInfo(Member member) {
 		Connection conn = getConnect();
-		String sql="SELECT * FROM tbl_member where MEMID=?"; //회원정보를 조회하는 쿼리
+		String sql ="UPDATE tbl_member \r\n"
+				+ "SET MEMID=NVL(?,MEMID),\r\n"
+				+ "MEMPW=NVL(?,MEMPW),\r\n"
+				+ "MEMNAME=NVL(?,MEMNAME),\r\n"
+				+ "MEMAGE=NVL(?,MEMAGE),\r\n"
+				+ "MEMPNUM=NVL(?,MEMPNUM),\r\n"
+				+ "MEMADDR=NVL(?,MEMADDR),\r\n"
+				+ "MEMHEIGHT=NVL(?,MEMHEIGHT),\r\n"
+				+ "MEMWEIGHT=NVL(?,MEMWEIGHT)\r\n"
+				+ "WHERE MEMID=?";
 		try {
 			PreparedStatement psmt = conn.prepareStatement(sql);
-			psmt.setString(1, memberId);
-			ResultSet rs= psmt.executeQuery();
-			if(rs.next()) {
-				member= new Member(); //멤버 객체 인스턴스 생성
-				member.setMem_id("MEMID");
-				member.setMem_name("MEMNAME");
-			}
+			psmt.setString(1,member.getMem_id());
+			psmt.setString(2, member.getMem_pw());
+			psmt.setString(3, member.getMem_name());
+			psmt.setInt(4, member.getMem_age());
+			psmt.setString(5, member.getMem_pnum());
+			psmt.setString(6, member.getMem_address());
+			psmt.setString(7,member.getMem_height());
+			psmt.setString(8, member.getMem_weight());
+			psmt.setString(9,member.getMem_id());
+			
+			int u = psmt.executeUpdate();
+			return u > 0; // 업데이트 성공 여부 반환
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally {
+			return false;
+		} finally {
 			try {
 				if (conn != null)
 					conn.close(); // 연결 종료
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}return member;
+		}
 	}
+	//선생 수정 
+	public boolean updateTeacherInfo(Teacher teacher) {
+		Connection conn = getConnect();
+		String sql="UPDATE tbl_teacher \r\n"
+				+ "SET TID=NVL(?,TID),\r\n"
+				+ "TPW=NVL(?,TPW),\r\n"
+				+ "TNAME=NVL(?,TNAME),\r\n"
+				+ "TAGE=NVL(?,TAGE),\r\n"
+				+ "TPNUM=NVL(?,TPNUM),\r\n"
+				+ "HIRE_DATE=NVL(?,HIRE_DATE)\r\n"
+				+ "WHERE TID=?";
+		try {
+			PreparedStatement psmt = conn.prepareStatement(sql);
+			psmt.setString(1, teacher.getT_id());
+			psmt.setString(2, teacher.getT_pw());
+			psmt.setString(3,teacher.getT_name());
+			psmt.setInt(4, teacher.getT_age());
+			psmt.setString(5, teacher.getT_Pnum());
+			psmt.setString(6, teacher.getHire_date());
+			psmt.setString(7, teacher.getT_id());
+			int u = psmt.executeUpdate();
+			return u > 0; // 업데이트 성공 여부 반환
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				if (conn != null)
+					conn.close(); // 연결 종료
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	// 회원 삭제 쿼리
+	public boolean deleteMemberInfo(Member member) {
+		Connection conn = getConnect();
+		String sql = "delete from tbl_member where MEMID=?";
+
+		try {
+			PreparedStatement psmt = conn.prepareStatement(sql);
+			psmt.setString(1, member.getMem_id());
+			int r = psmt.executeUpdate();
+			if (r > 0) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return false;
+
+	}
+	//선생 삭제 쿼리
+	public boolean deleteTeacherInfo(Teacher teacher) {
+		Connection conn = getConnect();
+		String sql = "delete from tbl_teacher where TID=?";
+		
+		try {
+			PreparedStatement psmt = conn.prepareStatement(sql);
+			psmt.setString(1, teacher.getT_id());
+			int r = psmt.executeUpdate();
+			if (r > 0) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return false;
+		
+	}
+
+	
+	// 로그인한 회원의 아이디 , 이름 가져오기
+	public Member getMemberFromOjdbc(String memberId) {
+		Member member = null;
+		Connection conn = getConnect();
+		String sql = "SELECT * FROM tbl_member where MEMID=?"; // 회원정보를 조회하는 쿼리
+		try {
+			PreparedStatement psmt = conn.prepareStatement(sql);
+			psmt.setString(1, memberId);
+			ResultSet rs = psmt.executeQuery();
+			if (rs.next()) {
+				member = new Member(); // 멤버 객체 인스턴스 생성
+				member.setMem_id("MEMID");
+				member.setMem_name("MEMNAME");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (conn != null)
+					conn.close(); // 연결 종료
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return member;
+	}
+
 	// 강사 로그인 처리
 	public Teacher tlogin(String id, String pw) {
 		Connection conn = getConnect();
@@ -178,7 +312,7 @@ public class MemberJdbc {
 
 			e.printStackTrace();
 
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -211,7 +345,7 @@ public class MemberJdbc {
 			// TODO Auto-generated catch block
 
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -240,8 +374,8 @@ public class MemberJdbc {
 
 			if (rs.next()) {
 
-				
-				Adminer adminer = new Adminer(rs.getString("admin_id"), rs.getString("admin_pw"), rs.getString("admin_name"));
+				Adminer adminer = new Adminer(rs.getString("admin_id"), rs.getString("admin_pw"),
+						rs.getString("admin_name"));
 
 				return adminer;
 
@@ -253,7 +387,7 @@ public class MemberJdbc {
 
 			e.printStackTrace();
 
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -281,7 +415,7 @@ public class MemberJdbc {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -298,7 +432,7 @@ public class MemberJdbc {
 		Connection conn = getConnect();
 		String msql = "select memId from tbl_member where memId=?";
 		String tsql = "select tId from tbl_teacher where tId=?";
-		String asql ="select admin_id from tbl_admin where admin_id=?";
+		String asql = "select admin_id from tbl_admin where admin_id=?";
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
 		try {
@@ -318,13 +452,13 @@ public class MemberJdbc {
 			psmt = conn.prepareStatement(asql);
 			psmt.setString(1, id);
 			rs = psmt.executeQuery();
-			if(rs.next()) {
+			if (rs.next()) {
 				return true; // tbl_adminer에서 id가 존재
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -354,7 +488,7 @@ public class MemberJdbc {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
@@ -363,6 +497,80 @@ public class MemberJdbc {
 			}
 		}
 		return list;
+	}
+	//회원 목록 조회
+	// 회원 목록 조회
+	public List<Member> MList() {
+	    List<Member> MList = new ArrayList<Member>();
+	    Connection conn = getConnect();
+	    String sql = "SELECT * FROM tbl_member"; // 테이블 이름이 tbl_member로 가정
+	    try {
+	        PreparedStatement psmt = conn.prepareStatement(sql);
+	        ResultSet rs = psmt.executeQuery();
+	        while (rs.next()) {
+	            // ResultSet에서 데이터 읽기
+	            String memberId = rs.getString("memid"); // 회원 ID
+	            String name = rs.getString("memname"); // 회원 이름
+	            
+	            // Member 객체 생성
+	            Member member = new Member();
+	           member.setMem_id(memberId);
+	           member.setMem_name(name);
+	           member.setMem_address(rs.getString("MEMADDR"));
+	           member.setMem_age(rs.getInt("MEMAGE"));
+	           member.setMem_pw(rs.getString("MEMPW"));
+	           member.setMem_pnum(rs.getString("MEMPNUM"));
+	           member.setMem_height(rs.getString("MEMHEIGHT"));
+	           member.setMem_weight(rs.getString("MEMWEIGHT"));
+	            MList.add(member);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (conn != null) {
+	                conn.close(); // 연결 닫기
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return MList; // 회원 목록 반환
+	}
+
+	//강사 목록 조회
+	public List<Teacher> TList(){
+		List<Teacher> TList = new ArrayList<Teacher>();
+	    Connection conn = getConnect();
+	    String sql="SELECT * FROM tbl_teacher";
+	    
+		try {
+			PreparedStatement psmt = conn.prepareStatement(sql);
+			ResultSet rs = psmt.executeQuery();
+			while(rs.next()) {
+				Teacher teacher = new Teacher();
+				teacher.setT_id(rs.getString("TID"));
+				teacher.setT_pw(rs.getString("TPW"));
+				teacher.setT_age(rs.getInt("Age"));
+				teacher.setT_name(rs.getString("TNAME"));
+				teacher.setT_Pnum(rs.getString("TPNUM"));
+				teacher.setHire_date(rs.getString("hire_date"));
+				TList.add(teacher);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+	        try {
+	            if (conn != null) {
+	                conn.close(); // 연결 닫기
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return TList; // 회원 목록 반환
+        
 	}
 
 }

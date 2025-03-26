@@ -38,11 +38,11 @@ public class Teacher extends Member{
 
 	}
 	
-	//메소드 교수가 과목등록하는 메소드
-	public void addCourse() {
-		
-	}
-
+public String showTeacherList() {
+	System.out.println("강사 id    강사 pw     이름     나이     번호            고용날짜");
+	return   t_id + ",    " + t_pw + "     " + t_name + "     " + t_age + "       "
+			+ t_Pnum + "          " + hire_date + " ";
+}
 	// getter,setter
 
 	@Override
