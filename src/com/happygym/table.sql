@@ -94,3 +94,13 @@ create table enrollments(
  FOREIGN KEY (MEM_ID) REFERENCES tbl_member(MEMID),
  FOREIGN KEY (course_id) REFERENCES tbl_courses(course_id)
 );
+
+--장바구니 테이블
+CREATE TABLE CART (
+    CART_ID NUMBER  PRIMARY KEY, -- 장바구니 ID
+    MEMBER_ID VARCHAR2(50) NOT NULL, -- 회원 ID (Foreign Key)
+    COURSE_ID NUMBER NOT NULL, -- 수업 ID (Foreign Key)
+    ADDED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 추가된 날짜,
+    FOREIGN KEY (MEMBER_ID) REFERENCES tbl_member(MEMID),
+    FOREIGN KEY (COURSE_ID) REFERENCES tbl_courses(course_id)
+);

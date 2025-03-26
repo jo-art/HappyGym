@@ -49,6 +49,13 @@ public class CourseManager {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			try {
+				if (conn != null)
+					conn.close(); // 연결 종료
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}
@@ -127,8 +134,8 @@ public class CourseManager {
 	            // 강사 이름으로 조회
 	            String sql = "SELECT c.course_id, c.course_name, t.tId, c.schedule, c.time, c.target, c.capacity " +
 	                  "FROM tbl_courses c " +
-	                  "JOIN tbl_teacher t ON c.t_id = t.tId " +
-	                  "WHERE t.tName = ?";
+	                  "JOIN tbl_teacher t ON c.t_id = t.TID " +
+	                  "WHERE t.TID = ?";
 	            psmt = conn.prepareStatement(sql);
 	            psmt.setString(1, keyword);
 	        } else {
@@ -139,15 +146,16 @@ public class CourseManager {
 	        while (rs.next()) {
 	            Course course = new Course();
 	            // Teacher 객체는 필요하지 않으므로 주석 처리
-	            // Teacher teacher = new Teacher(); 
+	             //Teacher teacher = new Teacher(); 
 	            course.setCourseId(rs.getInt("course_id"));
 	            course.setCourseName(rs.getString("course_name"));
-	            // teacher.setT_id(rs.getString("tId")); // Teacher 정보가 필요할 경우 주석 해제
+	            course.setTid(rs.getString("t_id"));; // Teacher 정보가 필요할 경우 주석 해제
 	            course.setSchedule(rs.getString("schedule"));
 	            course.setTime(rs.getString("time"));
 	            course.setTarget(rs.getString("target"));
 	            course.setCapacity(rs.getInt("capacity"));
 	            list.add(course);
+	            
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -178,11 +186,11 @@ public class CourseManager {
 			while (rs.next()) {
 			
 				Course course = new Course();
-				Teacher teacher = new Teacher();
+				
 				course.setCourseId(rs.getInt("course_id"));
 				course.setCourseName(rs.getString("course_name"));
-				teacher.setT_id(rs.getString("tId")); // tId로 수정	
-				course.setTeacher(teacher); // Course 객체에 Teacher 객체 추가
+				course.setTid(rs.getString("T_ID")); // tId로 수정	
+				//course.setTeacher(teacher); // Course 객체에 Teacher 객체 추가
 				course.setSchedule(rs.getString("schedule"));
 				course.setCapacity(rs.getInt("capacity"));
 				course.setTime(rs.getString("time"));
@@ -202,5 +210,46 @@ public class CourseManager {
 		}
 		return gAList;
 	}
+
+	public Course getCourseById(int courseId) {
+	    Course course = null; // 결과를 저장할 Course 객체 초기화
+	    Connection conn = getConnect(); // 데이터베이스 연결
+	    PreparedStatement psmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        // SQL 쿼리 준비
+	        String sql = "SELECT * FROM tbl_courses WHERE course_id = ?";
+	        psmt = conn.prepareStatement(sql);
+	        psmt.setInt(1, courseId); // 수업 ID 설정
+
+	        // 쿼리 실행
+	        rs = psmt.executeQuery();
+	        if (rs.next()) {
+	            // 수업 정보를 Course 객체에 저장
+	            course = new Course();
+	            course.setCourseId(rs.getInt("course_id"));
+	            course.setCourseName(rs.getString("course_name"));
+	            course.setTid(rs.getString("t_id"));
+	            course.setSchedule(rs.getString("schedule"));
+	            course.setTime(rs.getString("time"));
+	            course.setTarget(rs.getString("target"));
+	            course.setCapacity(rs.getInt("capacity"));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace(); // 예외 발생 시 스택 트레이스 출력
+	    } finally {
+	        // 자원 정리
+	        try {
+	            if (rs != null) rs.close();
+	            if (psmt != null) psmt.close();
+	            if (conn != null) conn.close(); // conn도 null 체크
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return course; // 조회된 Course 객체 반환 (없으면 null)
+	}
+
 
 }

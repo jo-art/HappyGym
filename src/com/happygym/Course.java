@@ -6,12 +6,15 @@ public class Course {
 	private int courseId; // 과목아이디
 	private String courseName; // 과목이름
 	private Teacher teacher; // 과목 강사
+	private String tid; //수강과목 아이디
 	private String schedule; // 과목 일정
 	private String time; //강좌 시간
 	private String target; //이용대상
 	private int capacity;//수용인원
 	
-
+	public Course(int courseId) {
+		this.courseId = courseId;
+	}
 	public Course(int courseId, String courseName, Teacher teacher, String schedule,String time,String target,int capacity) {
 		this.courseId = courseId;
 		this.courseName = courseName;
@@ -23,18 +26,27 @@ public class Course {
 
 	}
 	
+	
 //	@Override
 //	public String toString() {
 //		return "Course [courseId=" + courseId + ", courseName=" + courseName + ", teacher=" + teacher + ", schedule="
 //				+ schedule + ", time=" + time + ", target=" + target + ", capacity=" + capacity + "]";
 //	}
 
+	public String getTid() {
+		return tid;
+	}
+
+	public void setTid(String tid) {
+		this.tid = tid;
+	}
+
 	private void getInstance() {
 		
 	}
 	//회원들에게 보여주는 프로그램 조회할 때 출력되는 메소드
 	public String showListToM() {
-		return courseId + "  "+courseName+" "+schedule+" "+schedule+time+" "+capacity +" "+teacher;
+		return courseId + "  "+courseName+" "+schedule+" "+schedule+time+" "+capacity +" "+tid;
 	}
 	//관리자나 강사에게 보여주는 프로그램 조회시 출력되는 메소드
 	//수업id       수업명     강사id     수업일정    인원     시간    대상
@@ -42,9 +54,9 @@ public class Course {
 //	    return courseId + "       " + courseName + "      " + teacher + "     " + schedule + " " + capacity + "  " + time + " " + target;
 //	}
 	public String showListAll() {
-	    String teacherId = (teacher != null) ? teacher.getT_id() : "없음"; // 강사 ID null 체크
+	     // 강사 ID null 체크
 	    return String.format("%-5d %-15s %-10s %-15s %-10d %-15s %-10s", 
-	                         courseId, courseName, teacherId, schedule, capacity, time, target);
+	                         courseId, courseName, tid, schedule, capacity, time, target);
 	}
 
 

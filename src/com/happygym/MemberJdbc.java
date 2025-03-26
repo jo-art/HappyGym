@@ -122,7 +122,32 @@ public class MemberJdbc {
 		}
 		return false; // 등록 실패
 	}
-
+	//로그인한 회원의 아이디 , 이름 가져오기
+	public  Member getMemberFromOjdbc(String memberId) {
+		Member member=null;
+		Connection conn = getConnect();
+		String sql="SELECT * FROM tbl_member where MEMID=?"; //회원정보를 조회하는 쿼리
+		try {
+			PreparedStatement psmt = conn.prepareStatement(sql);
+			psmt.setString(1, memberId);
+			ResultSet rs= psmt.executeQuery();
+			if(rs.next()) {
+				member= new Member(); //멤버 객체 인스턴스 생성
+				member.setMem_id("MEMID");
+				member.setMem_name("MEMNAME");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				if (conn != null)
+					conn.close(); // 연결 종료
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}return member;
+	}
 	// 강사 로그인 처리
 	public Teacher tlogin(String id, String pw) {
 		Connection conn = getConnect();
