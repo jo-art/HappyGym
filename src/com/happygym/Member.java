@@ -26,9 +26,15 @@ public class Member {
 
 	
 	public String showMemList() {
-		return "mem_id=" + mem_id + ", mem_pw=" + mem_pw + ", mem_name=" + mem_name + ", mem_age=" + mem_age
-				+ ", mem_pnum=" + mem_pnum + ", mem_address=" + mem_address + ", mem_height=" + mem_height
-				+ ", mem_weight=" + mem_weight;
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("+----------------+----------------+----------------+---------+----------------+---------------------+--------------+--------------+\n");
+	    sb.append("|      ID        |      PW        |      이름      |  나이   |    전화번호    |        주소         |     키       |    몸무게    |\n");
+	    sb.append("+----------------+----------------+----------------+---------+----------------+---------------------+--------------+--------------+\n");
+	    sb.append(String.format("| %-14s | %-14s | %-14s | %-7d | %-14s | %-19s | %-12s | %-12s |\n",
+	            mem_id, mem_pw, mem_name, mem_age, mem_pnum, mem_address, mem_height, mem_weight));
+	    sb.append("+----------------+----------------+----------------+---------+----------------+---------------------+--------------+--------------+\n");
+	    
+	    return sb.toString();
 	}
 
 

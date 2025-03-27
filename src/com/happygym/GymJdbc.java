@@ -8,7 +8,7 @@ public class GymJdbc {
 	//연결 커넥션
 	Connection getConnect() {
 
-		String url="jdbc:oracle:thin:@localhost:1521:xe";
+		String url="jdbc:oracle:thin:@192.168.0.32:1521:xe";
 
 		String userId="scott";
 

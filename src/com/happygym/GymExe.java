@@ -145,9 +145,9 @@ public class GymExe {
 		return dao.Alogin(id, pw);
 	}
 
-//로그인 출력 메소드
+//로그인 출력 메소드 
 	private static void handellogin() {
-
+		
 		while (true) {
 			scn.nextLine();
 
@@ -193,7 +193,7 @@ public class GymExe {
 
 	public static void StudentMenu() {
 
-		System.out.println("1.로그인   2.비회원    3.회원등록");
+		System.out.println("1.로그인   2.비회원    3.회원등록  ");
 
 		System.out.println("===============================");
 
@@ -201,130 +201,179 @@ public class GymExe {
 
 		int menu = scn.nextInt();
 
-		switch (menu) {
+		boolean run =true;
+		while(run) {
+			switch (menu) {
 
-		case 1:// 기존회원 로그인
+			case 1:// 기존회원 로그인
 
-			handellogin();
-			break;
-
-		case 2:// 비회원 모드
-			System.out.println("1.프로그램신청 2.프로그램조회 3.장바구니 4.신청내역 ");
-			System.out.println("===============================");
-			System.out.println("선택>>");
-			menu = scn.nextInt();
-			if (menu == 1 || menu == 3 || menu == 4) {
-				System.out.println("로그인 후 사용가능합니다.");
 				handellogin();
+				break;
+
+			case 2:// 비회원 모드
+				System.out.println("1.프로그램신청 2.프로그램조회 3.장바구니 4.신청내역 5.종료");
+				System.out.println("===============================");
+				System.out.println("선택>>");
+				menu = scn.nextInt();
+				if (menu == 1 || menu == 3 || menu == 4) {
+					System.out.println("회원가입 후 사용가능합니다.");
+					enrollMember();
+				}
+				if (menu == 2) {
+					detaillist();
+				}
+				break;
+
+			case 3: // 회원등록
+
+				enrollMember();
+
+				break;
+			case 5:	
+				System.out.println("종료되었습니다.");
+				run= false;
+				break;
+			default:
+
+				System.out.println("잘못된 선택입니다.");
+
 			}
-			if (menu == 2) {
-				detaillist();
-			}
-			break;
-
-		case 3: // 회원등록
-
-			enrollMember();
-
-			break;
-
-		default:
-
-			System.out.println("잘못된 선택입니다.");
-
 		}
+		
 
 	}
 
 	public static void entrollStudentMenu() { // 회원 메뉴판
+	    int menu = 0;
 
-		int menu = 0;
-		String ment = "";
-		while (menu != 3) {
-			System.out.println("1.프로그램신청  2.장바구니  3.종료");
-			System.out.println("===============================");
-			System.out.println("선택>>");
-			menu = scn.nextInt();
+	    while (true) {
+	        System.out.println("1.프로그램신청  2.장바구니(미구현) 3.신청내역 4.종료");
+	        System.out.println("===============================");
+	        System.out.print("선택>> ");
+	        menu = getUserInput();
 
-			switch (menu) {
-			case 1:
-				list();
-				scn.nextLine(); // 입력버퍼 비우기
-				System.out.println("희망하는 프로그램 id 입력>>");
-				System.out.println("===============================");
-				int id = scn.nextInt();
-				System.out.println("1.신청 2.신청취소 3.신청내역");
-				System.out.println("===============================");
-				System.out.println("선택>>");
-				int action = scn.nextInt();
-				if (action == 1) {
-
-					Enrollments enrollments = new Enrollments();
-					enrollments.setEnrollment_id(generateEnrollmentId()); // ID 생성 메서드 호출
-					enrollments.setMemid(loggedInMemberId);
-					enrollments.setCourseId(id); // Course 객체 설정
-					enrollments.setMembmer(getCurrentMember()); // 현재 회원 정보 설정
-					enrollments.setEnrollmentDate(new Timestamp(System.currentTimeMillis())); // 현재 시간 설정
-					enrollments.setStatus("신청함"); // 상태 설정
-
-					boolean result = Edao.addEnrollProgram(enrollments);
-					if (result) {
-						System.out.println("수강신청 완료");
-						enrolllist();
-					} else {
-						System.out.println("수강신청 실패");
-					}
-
-				}
-				if (action == 2) {
-					enrolllist();
-					scn.nextLine(); // 입력버퍼 비우기
-					System.out.println("수강 취소할 프로그램 id 입력>>");
-					System.out.println("===============================");
-					id = scn.nextInt();
-					Enrollments enrollments = new Enrollments();
-					enrollments.setEnrollment_id(generateEnrollmentId()); // ID 생성 메서드 호출
-					enrollments.setCourseId(id); // Course 객체 설정
-					enrollments.setMembmer(getCurrentMember()); // 현재 회원 정보 설정
-					enrollments.setEnrollmentDate(new Timestamp(System.currentTimeMillis())); // 현재 시간 설정
-					enrollments.setStatus("신청취소"); // 상태 설정
-					boolean result = Edao.deleteEnrollProgram(enrollments);
-					if (result) {
-						System.out.println("수강신청 취소 완료");
-
-					} else {
-						System.out.println("수강신청 취소 실패");
-					}
-				}
-				if (action == 3) {
-					enrolllist();
-				}
-				break;
-			case 2:
-				System.out.println("1.장바구니 2. 장바구니 추가 3장바구니 삭제");
-				menu = scn.nextInt();
-				// 장바구니 로직
-				if (menu == 1) {
-					viewtoCart();
-				}
-				if (menu == 2) {
-					addtoCart();
-
-				}
-
-				if (menu == 3) {
-					deleteCart();
-				}
-				break;
-			case 3:
-				System.out.println("메뉴를 종료합니다.");
-				break;
-			default:
-				System.out.println("잘못된 선택입니다.");
-			}
-		}
-
+	        switch (menu) {
+	            case 1:
+	                handleProgramEnrollment();
+	                break;
+	            case 2:
+	                handleCartMenu();
+	                break;
+	            case 3:
+	                enrolllist();
+	                break;
+	            case 4:
+	                System.out.println("메뉴를 종료합니다.");
+	                return; // 종료
+	            default:
+	                System.out.println("잘못된 선택입니다.");
+	        }
+	    }
 	}
+
+	private static void handleProgramEnrollment() {
+	    list();
+	    scn.nextLine(); // 입력 버퍼 비우기
+	    boolean run = true;
+
+	    while (run) {
+	        System.out.print("희망하는 프로그램 id 입력>> ");
+	        int id = getUserInput();
+
+	        System.out.println("1.신청 2.신청취소 3.뒤로가기");
+	        System.out.println("===============================");
+	        System.out.print("선택>> ");
+	        int action = getUserInput();
+
+	        if (action == 1) {
+	            enrollProgram(id);
+	        } else if (action == 2) {
+	            cancelEnrollment(id);
+	            run = false; // 취소 후 반복 종료
+	        } else if(action ==3) {
+	        	return;
+	        }
+	        else {
+	            System.out.println("잘못된 선택입니다.");
+	        }
+	    }
+	}
+
+	private static void enrollProgram(int courseId) {
+	    Enrollments enrollments = new Enrollments();
+	    enrollments.setEnrollment_id(generateEnrollmentId()); // ID 생성 메서드 호출
+	    enrollments.setMemid(loggedInMemberId);
+	    enrollments.setCourseId(courseId);
+	    enrollments.setMembmer(getCurrentMember());
+	    enrollments.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
+	    enrollments.setStatus("신청함");
+
+	    boolean result = Edao.addEnrollProgram(enrollments);
+	    if (result) {
+	        System.out.println("수강신청 완료");
+	        enrolllist();
+	    } else {
+	        System.out.println("수강신청 실패");
+	    }
+	}
+
+	private static void cancelEnrollment(int courseId) {
+	    enrolllist(); // 현재 신청 목록 출력
+	    System.out.print("수강 취소할 프로그램 id 입력>> ");
+	    int id = getUserInput();
+
+	    Enrollments enrollments = new Enrollments();
+	    enrollments.setEnrollment_id(generateEnrollmentId()); // ID 생성 메서드 호출
+	    enrollments.setCourseId(id);
+	    enrollments.setMembmer(getCurrentMember());
+	    enrollments.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
+	    enrollments.setStatus("신청취소");
+
+	    boolean result = Edao.deleteEnrollProgram(enrollments);
+	    if (result) {
+	        System.out.println("수강신청 취소 완료");
+	    } else {
+	        System.out.println("수강신청 취소 실패");
+	    }
+	}
+
+	private static void handleCartMenu() {
+	    boolean run = true;
+
+	    while (run) {
+	        System.out.println("1.장바구니 보기 2.장바구니 추가 3.장바구니 삭제 4.종료");
+	        System.out.print("선택>> ");
+	        int menu = getUserInput();
+
+	        switch (menu) {
+	            case 1:
+	                viewtoCart();
+	                break;
+	            case 2:
+	                addtoCart();
+	                break;
+	            case 3:
+	                deleteCart();
+	                break;
+	            case 4:
+	                run = false; // 종료
+	                break;
+	            default:
+	                System.out.println("잘못된 선택입니다.");
+	        }
+	    }
+	}
+
+	private static int getUserInput() {
+	    while (true) {
+	        try {
+	            return Integer.parseInt(scn.nextLine().trim());
+	        } catch (NumberFormatException e) {
+	            System.out.println("잘못된 입력입니다. 숫자를 입력하세요.");
+	        }
+	    }
+	}
+
 
 	// 강사모드
 
@@ -427,56 +476,65 @@ public class GymExe {
 		Member member = dao.getMemberFromOjdbc(loggedInMemberId);
 		return member; // 조회된 회원 정보 반환
 	}
+	
+	
 
 	public static void TeacherMenu() {
-		System.out.println("1.강사등록  2.로그인");
-		System.out.println("===============================");
-		System.out.println("선택>>");
-		int menu = scn.nextInt();
-		if (menu == 2) {
+	    System.out.println("1.강사등록  2.로그인");
+	    System.out.println("===============================");
+	    System.out.print("선택>> ");
+	    
+	    int menu = scn.nextInt();
+	    scn.nextLine(); // 다음 입력을 위해 줄바꿈 처리
 
-			handellogin();
-
-		} else {
-			scn.nextLine();
-			String t_id = "";
-			while (true) {
-				System.out.println("ID>>");
-				t_id = scn.nextLine();
-				if (dao.isIdExists(t_id)) {
-					System.out.println("이미 존재하는 아이디 입니다. 다른 아이디 입력해주세요");
-				} else {
-					System.out.println("사용가능한 아이디입니다." + t_id);
-
-					break;
-				}
-
-			}
-
-			System.out.println("PW>>");
-			String t_pw = scn.nextLine();
-			System.out.println("이름>>");
-			String t_name = scn.nextLine();
-			System.out.println("전화번호>>");
-			String t_pnum = scn.nextLine();
-			System.out.println("고용날짜(yyyy-mm-dd)>>");
-			String hiredate = scn.nextLine();
-
-			Teacher teacher = new Teacher();
-			teacher.setT_id(t_id);
-			teacher.setT_pw(t_pw);
-			teacher.setT_name(t_name);
-			teacher.setT_Pnum(t_pnum);
-			teacher.setHire_date(hiredate);
-			if (dao.Teacherinsert(teacher)) {
-				handellogin();
-			} else {
-				System.out.println("강사등록실패");
-			}
-
-		}
-
+	    if (menu == 2) {
+	        handellogin(); // 로그인 처리
+	    } else if (menu == 1) {
+	        registerTeacher(); // 강사 등록 처리
+	    } else {
+	        System.out.println("잘못된 선택입니다. 1 또는 2를 입력해주세요.");
+	    }
 	}
+
+	private static void registerTeacher() {
+	    String t_id = "";
+	    
+	    while (true) {
+	        System.out.print("ID>> ");
+	        t_id = scn.nextLine();
+
+	        if (dao.isIdExists(t_id)) {
+	            System.out.println("이미 존재하는 아이디입니다. 다른 아이디 입력해주세요.");
+	        } else {
+	            System.out.println("사용가능한 아이디입니다: " + t_id);
+	            break;
+	        }
+	    }
+
+	    System.out.print("PW>> ");
+	    String t_pw = scn.nextLine();
+	    System.out.print("이름>> ");
+	    String t_name = scn.nextLine();
+	    System.out.print("전화번호>> ");
+	    String t_pnum = scn.nextLine();
+	    System.out.print("고용날짜(yyyy-mm-dd)>> ");
+	    String hiredate = scn.nextLine();
+
+	    Teacher teacher = new Teacher();
+	    teacher.setT_id(t_id);
+	    teacher.setT_pw(t_pw);
+	    teacher.setT_name(t_name);
+	    teacher.setT_Pnum(t_pnum);
+	    teacher.setHire_date(hiredate);
+
+	    if (dao.Teacherinsert(teacher)) {
+	        System.out.println("강사 등록 완료!");
+	        handellogin(); // 등록 후 로그인 처리
+	    } else {
+	        System.out.println("강사 등록 실패.");
+	    }
+	}
+
 
 	public static void entrollTeacherMenu() { // 등록된 강사의 메뉴
 		while (true) {
@@ -487,15 +545,18 @@ public class GymExe {
 			scn.nextLine();
 			switch (menu) {
 			case 1:
+				list();
 				System.out.println("1.등록 2.수정 3.삭제");
 				System.out.println("===============================");
 				System.out.println("선택>>");
 				menu = scn.nextInt();
 
 				if (menu == 1) {
+					
 					registerCourse(); // 프로그램 등록 메소드 호출
 				}
 				if (menu == 2) {
+					
 					editCourse(); // 프로그램 수정 메소드 호출
 				}
 				if (menu == 3) {
@@ -627,7 +688,7 @@ public class GymExe {
 
 	private static void editCourse() { // 프로그램 수정 메소드
 		// TODO Auto-generated method stub
-
+		
 		scn.nextLine();
 		System.out.println("프로그램 아이디:"); // 프로그램 아이디로 검색해서 수정함
 		String courseId = scn.nextLine();
@@ -670,6 +731,7 @@ public class GymExe {
 	}
 
 	public static void registerCourse() {// 프로그램등록 메소드
+		list();
 		scn.nextLine();
 		System.out.println("프로그램 아이디:");
 		String courseId = scn.nextLine();
@@ -716,233 +778,269 @@ public class GymExe {
 
 	}
 
-	// 관리자 모드
-
 	public static void AdminerMenu() {
-		scn.nextLine();
-		String adminId = "";
-		handellogin();
-		while (true) {
-			System.out.println("ID>>");
-			adminId = scn.nextLine();
-			if (dao.isIdExists(adminId)) {
-				System.out.println("이미 존재하는 아이디 입니다. 다른 아이디 입력해주세요");
-			} else {
-				System.out.println("사용가능한 아이디입니다." + adminId);
-				break;
-			}
-		}
-		System.out.println("PW>>");
-		String adminPw = scn.nextLine();
-		System.out.println("이름>>");
-		String adminName = scn.nextLine();
+	    scn.nextLine();
+	    String adminId = "";
 
-		Adminer adminer = new Adminer();
-		adminer.setAdm_id(adminId);
-		adminer.setAdm_pw(adminPw);
-		adminer.setAdm_name(adminName);
-		if (dao.adminerinsert(adminer)) {
-			System.out.println("관리자 등록 성공!");
-			// 관리자 등록 후의 로직
-		} else {
-			System.out.println("관리자 등록 실패");
-		}
+	    while (true) {
+	        System.out.println("ID>>");
+	        adminId = scn.nextLine();
+	        if (dao.isIdExists(adminId)) {
+	            System.out.println("이미 존재하는 아이디 입니다. 다른 아이디 입력해주세요.");
+	        } else {
+	            System.out.println("사용 가능한 아이디입니다: " + adminId);
+	            break;
+	        }
+	    }
+
+	    System.out.println("PW>>");
+	    String adminPw = scn.nextLine();
+	    System.out.println("이름>>");
+	    String adminName = scn.nextLine();
+
+	    Adminer adminer = new Adminer();
+	    adminer.setAdm_id(adminId);
+	    adminer.setAdm_pw(adminPw);
+	    adminer.setAdm_name(adminName);
+
+	    if (dao.adminerinsert(adminer)) {
+	        System.out.println("관리자 등록 성공!");
+	        // 관리자 등록 후 관리 메뉴로 돌아가기
+	        return; // 등록 후 종료하여 entrollAdminerMenu()로 돌아감
+	    } else {
+	        System.out.println("관리자 등록 실패");
+	    }
 	}
 
 	private static void entrollAdminerMenu(Scanner scn) {
 	    boolean run = true;
+
 	    while (run) {
-	        System.out.println("1.회원관리  2.프로그램관리 3.강사관리 4.관리자등록 5.메인메뉴로 돌아가기");
+	        System.out.println("1.회원관리  2.프로그램관리 3.강사관리  5.종료");
 	        System.out.println("===============================");
 	        System.out.print("선택>> ");
 
-	        while (true) {
-	            try {
-	                int menu = Integer.parseInt(scn.nextLine().trim()); // 입력받은 문자열의 앞뒤 공백 제거
-	                switch (menu) {
-	                    case 1: // 회원관리
-	                        memlist();
-	                        System.out.println("1.수정 2.삭제 3.등록");
-	                        System.out.println("===============================");
-	                        System.out.print("선택>> ");
-	                        int action = Integer.parseInt(scn.nextLine().trim());
+	        try {
+	            int menu = Integer.parseInt(scn.nextLine().trim());
 
-	                        if (action == 1) {
-	                            System.out.print("수정할 회원의 id 입력>> ");
-	                            String memId = scn.nextLine();
-
-	                            System.out.print("기존 회원의 id와 pw 확인(기존값과 동일해야합니다!)");
-	                            System.out.print(" id>> ");
-	                            memId = scn.nextLine(); // 수정할 id를 다시 입력받는 부분
-	                            System.out.print(" pw>> ");
-	                            String memPW = scn.nextLine();
-	                            System.out.print(" 이름>> ");
-	                            String memName = scn.nextLine();
-	                            System.out.print(" 나이>> ");
-	                            int age = Integer.parseInt(scn.nextLine().trim()); // 나이 입력
-	                            System.out.print(" 번호>> ");
-	                            String memPNUM = scn.nextLine();
-	                            System.out.print(" 주소>> ");
-	                            String memAddr = scn.nextLine();
-	                            System.out.print(" 키>> ");
-	                            String height = scn.nextLine();
-	                            System.out.print(" 몸무게>> ");
-	                            String weight = scn.nextLine();
-
-	                            Member member = new Member();
-	                            member.setMem_id(memId);
-	                            member.setMem_pw(memPW);
-	                            member.setMem_name(memName);
-	                            member.setMem_age(age);
-	                            member.setMem_pnum(memPNUM);
-	                            member.setMem_address(memAddr);
-	                            member.setMem_height(height);
-	                            member.setMem_weight(weight);
-
-	                            if (dao.updateMemberInfo(member)) {
-	                                System.out.println("수정완료");
-	                            } else {
-	                                System.out.println("수정 실패");
-	                            }
-	                        } else if (action == 2) {
-	                            System.out.print("삭제할 회원의 id 입력>> ");
-	                            String memId = scn.nextLine();
-	                            Member member = new Member();
-	                            member.setMem_id(memId);
-	                            if (dao.deleteMemberInfo(member)) { // 삭제 메서드 호출
-	                                System.out.println("삭제완료");
-	                            } else {
-	                                System.out.println("삭제 실패");
-	                            }
-	                        } else if (action == 3) {
-	                            enrollMembers();
-	                        } else {
-	                            System.out.println("잘못된 선택입니다.");
-	                        }
-	                        break;
-	                    case 2: // 프로그램관리
-	                        System.out.println("1.등록 2.수정 3.삭제");
-	                        System.out.println("===============================");
-	                        System.out.print("선택>> ");
-	                        menu = Integer.parseInt(scn.nextLine().trim());
-
-	                        if (menu == 1) {
-	                            registerCourse(); // 프로그램 등록 메소드 호출
-	                        } else if (menu == 2) {
-	                            editCourse(); // 프로그램 수정 메소드 호출
-	                        } else if (menu == 3) {
-	                            delteCourse(); // 프로그램 삭제 메소드 호출
-	                        } else {
-	                            System.out.println("잘못된 선택입니다.");
-	                        }
-	                        break;
-	                    case 3: // 강사관리
-	                        System.out.println("1.등록  2.수정   3.삭제");
-	                        System.out.println("===============================");
-	                        System.out.print("선택>> ");
-	                        menu = Integer.parseInt(scn.nextLine().trim());
-
-	                        if (menu == 1) {
-	                            String t_id = "";
-	                            while (true) {
-	                                System.out.print("ID>> ");
-	                                t_id = scn.nextLine();
-	                                if (dao.isIdExists(t_id)) {
-	                                    System.out.println("이미 존재하는 아이디 입니다. 다른 아이디 입력해주세요");
-	                                } else {
-	                                    System.out.println("사용가능한 아이디입니다." + t_id);
-	                                    break;
-	                                }
-	                            }
-
-	                            System.out.print("PW>> ");
-	                            String t_pw = scn.nextLine();
-	                            System.out.print("이름>> ");
-	                            String t_name = scn.nextLine();
-	                            System.out.print("전화번호>> ");
-	                            String t_pnum = scn.nextLine();
-	                            System.out.print("고용날짜(yyyy-mm-dd)>> ");
-	                            String hiredate = scn.nextLine();
-
-	                            Teacher teacher = new Teacher();
-	                            teacher.setT_id(t_id);
-	                            teacher.setT_pw(t_pw);
-	                            teacher.setT_name(t_name);
-	                            teacher.setT_Pnum(t_pnum);
-	                            teacher.setHire_date(hiredate);
-	                            if (dao.Teacherinsert(teacher)) {
-	                                System.out.println("강사등록성공");
-	                            } else {
-	                                System.out.println("강사등록실패");
-	                            }
-	                        } else if (menu == 2) {
-	                            teacherList();
-	                            System.out.println("수정할 강사의 ID와 PW를 확인하세요 (기존값 입력)");
-	                            System.out.print("ID와 PW를 입력하세요 (형식: ID,PW)>> ");
-
-	                            String input = scn.nextLine();
-	                            String[] credentials = input.split(",");
-
-	                            // 입력 형식 검증
-	                            if (credentials.length != 2) {
-	                                System.out.println("ID와 PW를 올바른 형식으로 입력하세요. (형식: ID,PW)");
-	                                return; // 또는 적절한 오류 처리
-	                            }
-
-	                            String tid = credentials[0].trim();
-	                            String tpw = credentials[1].trim();
-
-	                            // 추가적인 입력 받기
-	                            System.out.print("이름>> ");
-	                            String tname = scn.nextLine();
-	                            System.out.print("전화번호>> ");
-	                            String tpnum = scn.nextLine();
-	                            System.out.print("고용날짜(yyyy-mm-dd)>> ");
-	                            String hiredate = scn.nextLine();
-
-	                            Teacher teacher = new Teacher();
-	                            teacher.setT_id(tid);
-	                            teacher.setT_pw(tpw);
-	                            teacher.setT_name(tname);
-	                            teacher.setT_Pnum(tpnum);
-	                            teacher.setHire_date(hiredate);
-
-	                            // 수정 처리
-	                            if (dao.updateTeacherInfo(teacher)) {
-	                                System.out.println("수정완료");
-	                            } else {
-	                                System.out.println("수정실패");
-	                            }
-	                        } else if (menu == 3) {
-	                            System.out.print("삭제할 강사의 id 입력>> ");
-	                            String teacherId = scn.nextLine();
-	                            Teacher teacher = new Teacher();
-	                            teacher.setT_id(teacherId);
-	                            if (dao.deleteTeacherInfo(teacher)) { // 삭제 메서드 호출
-	                                System.out.println("삭제완료");
-	                            } else {
-	                                System.out.println("삭제 실패");
-	                            }
-	                        } else {
-	                            System.out.println("잘못된 선택입니다.");
-	                        }
-	                        break;
-	                    case 4: // 관리자 등록
-	                        AdminerMenu();
-	                        break;
-	                    case 5:
-	                        run = false;
-	                        break;
-	                    default:
-	                        System.out.println("잘못선택하셨습니다.");
-	                }
-	            } catch (NumberFormatException e) {
-	                System.out.println("정수/숫자를 입력해야합니다.");
-	                
+	            switch (menu) {
+	                case 1: // 회원관리
+	                    manageMembers();
+	                    break;
+	                case 2: // 프로그램관리
+	                    managePrograms();
+	                    break;
+	                case 3: // 강사관리
+	                    manageTeachers();
+	                    break;
+	              
+	                case 5: // 종료
+	                    System.out.println("종료");
+	                    run = false;
+	                    break;
+	                default:
+	                    System.out.println("잘못 선택하셨습니다.");
 	            }
+	        } catch (NumberFormatException e) {
+	            System.out.println("다시 정수/숫자를 입력해야 합니다.");
 	        }
 	    }
 	}
+
+	private static void manageMembers() {
+	    // 회원 관리 로직
+		memlist();
+        System.out.println("1.회원정보수정 2.회원정보삭제(미구현) 3.회원정보등록 4.종료");
+        System.out.println("===============================");
+        System.out.print("선택>> ");
+        int action = Integer.parseInt(scn.nextLine().trim());
+
+        if (action == 1) {
+            System.out.print("수정할 회원의 id 입력>> ");
+            String memId = scn.nextLine();
+
+            System.out.print("기존 회원의 id와 pw 확인(기존값과 동일해야합니다!)");
+            System.out.print(" id>> ");
+            memId = scn.nextLine(); // 수정할 id를 다시 입력받는 부분
+            System.out.print(" pw>> ");
+            String memPW = scn.nextLine();
+            System.out.print(" 이름>> ");
+            String memName = scn.nextLine();
+            System.out.print(" 나이>> ");
+            int age = Integer.parseInt(scn.nextLine().trim()); // 나이 입력
+            System.out.print(" 번호>> ");
+            String memPNUM = scn.nextLine();
+            System.out.print(" 주소>> ");
+            String memAddr = scn.nextLine();
+            System.out.print(" 키>> ");
+            String height = scn.nextLine();
+            System.out.print(" 몸무게>> ");
+            String weight = scn.nextLine();
+
+            Member member = new Member();
+            member.setMem_id(memId);
+            member.setMem_pw(memPW);
+            member.setMem_name(memName);
+            member.setMem_age(age);
+            member.setMem_pnum(memPNUM);
+            member.setMem_address(memAddr);
+            member.setMem_height(height);
+            member.setMem_weight(weight);
+
+            if (dao.updateMemberInfo(member)) {
+                System.out.println("수정완료");
+               
+            } else {
+                System.out.println("수정 실패");
+            }
+        } else if (action == 2) {
+            System.out.print("삭제할 회원의 id 입력>> ");
+            String memId = scn.nextLine();
+            Member member = new Member();
+            member.setMem_id(memId);
+            if (dao.deleteMemberInfo(member)) { // 삭제 메서드 호출
+                System.out.println("삭제완료");
+               
+            } else {
+                System.out.println("삭제 실패");
+            }
+        } else if (action == 3) {
+            enrollMembers();
+        } else if(action ==4) {
+        	  
+        }else {
+            System.out.println("잘못된 선택입니다.");
+        }
+	}
+
+	private static void managePrograms() {
+	    // 프로그램 관리 로직
+		System.out.println("1.프로그램등록 2.프로그램수정 3.프로그램삭제(미구현)");
+        System.out.println("===============================");
+        System.out.print("선택>> ");
+        int menu = Integer.parseInt(scn.nextLine().trim());
+
+        if (menu == 1) {
+            registerCourse(); // 프로그램 등록 메소드 호출
+        } else if (menu == 2) {
+            editCourse(); // 프로그램 수정 메소드 호출
+        } else if (menu == 3) {
+            delteCourse(); // 프로그램 삭제 메소드 호출
+        } else {
+            System.out.println("잘못된 선택입니다.");
+        }
+	}
+
+	private static void manageTeachers() {
+	    // 강사 관리 로직
+		teacherList();
+        System.out.println("1.강사정보등록  2.강사정보수정   3.강사정보삭제(미구현)");
+        System.out.println("===============================");
+        System.out.print("선택>> ");
+        int menu = Integer.parseInt(scn.nextLine().trim());
+
+        if (menu == 1) {
+            String t_id = "";
+            while (true) {
+                System.out.print("ID>> ");
+                t_id = scn.nextLine();
+                if (dao.isIdExists(t_id)) {
+                    System.out.println("이미 존재하는 아이디 입니다. 다른 아이디 입력해주세요");
+                } else {
+                    System.out.println("사용가능한 아이디입니다." + t_id);
+                    break;
+                }
+            }
+
+            System.out.print("PW>> ");
+            String t_pw = scn.nextLine();
+            System.out.print("이름>> ");
+            String t_name = scn.nextLine();
+            System.out.print("전화번호>> ");
+            String t_pnum = scn.nextLine();
+            System.out.println("나이>>");
+            int age= scn.nextInt();
+            System.out.print("고용날짜(yyyy-mm-dd)>> ");
+            String hiredate = scn.nextLine();
+
+            Teacher teacher = new Teacher();
+            teacher.setT_id(t_id);
+            teacher.setT_pw(t_pw);
+            teacher.setT_name(t_name);
+            teacher.setT_Pnum(t_pnum);
+            teacher.setT_age(age);
+            teacher.setHire_date(hiredate);
+            
+            if (dao.Teacherinsert(teacher)) {
+                System.out.println("강사등록성공");
+                teacherList();
+            } else {
+                System.out.println("강사등록실패");
+            }
+        } else if (menu == 2) {
+            teacherList();
+            System.out.println("수정할 강사의 ID와 PW를 확인하세요 (기존값 입력)");
+            System.out.print("ID와 PW를 입력하세요 (형식: ID,PW)>> ");
+
+            String input = scn.nextLine();
+            String[] credentials = input.split(",");
+
+            // 입력 형식 검증
+            if (credentials.length != 2) {
+                System.out.println("ID와 PW를 올바른 형식으로 입력하세요. (형식: ID,PW)");
+                return; // 또는 적절한 오류 처리
+            }
+
+            String tid = credentials[0].trim();
+            String tpw = credentials[1].trim();
+
+            // 추가적인 입력 받기
+            System.out.print("이름>> ");
+            String tname = scn.nextLine();
+            System.out.print("전화번호>> ");
+            String tpnum = scn.nextLine();
+            System.out.println("나이>>");
+            int age = Integer.parseInt(scn.nextLine().trim());
+            System.out.print("고용날짜(yyyy-mm-dd)>> ");
+            String hiredate = scn.nextLine();
+
+            Teacher teacher = new Teacher();
+            teacher.setT_id(tid);
+            teacher.setT_pw(tpw);
+            teacher.setT_name(tname);
+            teacher.setT_Pnum(tpnum);
+            
+            teacher.setHire_date(hiredate);
+            teacher.setT_age(age);
+            // 수정 처리
+            if (dao.updateTeacherInfo(teacher)) {
+                System.out.println("수정완료");
+                teacherList();
+                
+            } else {
+                System.out.println("수정실패");
+            }
+            System.out.println("메뉴로 돌아가려면 Enter 키를 누르세요.");
+            scn.nextLine(); // Enter 키 대기
+        } else if (menu == 3) {
+            System.out.print("삭제할 강사의 id 입력>> ");
+            String teacherId = scn.nextLine();
+            Teacher teacher = new Teacher();
+            teacher.setT_id(teacherId);
+            if (dao.deleteTeacherInfo(teacher)) { // 삭제 메서드 호출
+                System.out.println("삭제완료");
+                teacherList();
+            } else {
+                System.out.println("삭제 실패");
+            }
+            System.out.println("메뉴로 돌아가려면 Enter 키를 누르세요.");
+            scn.nextLine(); // Enter 키 대기
+        } else {
+            System.out.println("잘못된 선택입니다.");
+        }
+	}
+
+	
 
 
 	
@@ -978,8 +1076,16 @@ public class GymExe {
 					break;
 
 				case 3: // 관리자
-					entrollAdminerMenu(scn);
-					break;
+					 System.out.println("1.관리자로그인 ");
+					    int Amenu = scn.nextInt();
+
+					    if (Amenu == 1) {
+					        handellogin(); // 관리자 로그인 처리
+					    }  else {
+					        System.out.println("잘못된 선택입니다."); // 잘못된 입력 처리
+					    }
+
+					    break;
 				case 0:
 					run = false;
 					System.out.println("프로그램을 종료합니다.");

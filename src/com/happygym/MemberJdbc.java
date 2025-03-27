@@ -16,7 +16,7 @@ public class MemberJdbc {
 
 	Connection getConnect() {
 
-		String url = "jdbc:oracle:thin:@localhost:1521:xe";
+		String url = "jdbc:oracle:thin:@192.168.0.32:1521:xe";
 
 		String userId = "scott";
 
@@ -172,7 +172,7 @@ public class MemberJdbc {
 				+ "SET TID=NVL(?,TID),\r\n"
 				+ "TPW=NVL(?,TPW),\r\n"
 				+ "TNAME=NVL(?,TNAME),\r\n"
-				+ "TAGE=NVL(?,TAGE),\r\n"
+				+ "AGE=NVL(?,AGE),\r\n"
 				+ "TPNUM=NVL(?,TPNUM),\r\n"
 				+ "HIRE_DATE=NVL(?,HIRE_DATE)\r\n"
 				+ "WHERE TID=?";
@@ -328,7 +328,7 @@ public class MemberJdbc {
 	public boolean Teacherinsert(Teacher teacher) {
 
 		Connection conn = getConnect();
-		String sql = "INSERT INTO tbl_teacher(tId, tPw, tName, tPnum, hire_date) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO tbl_teacher(tId, tPw, tName, tPnum, hire_date,Age) VALUES (?, ?, ?, ?, ?,?)";
 		try {
 			PreparedStatement psmt = conn.prepareStatement(sql);
 			psmt.setString(1, teacher.getT_id());
@@ -336,6 +336,7 @@ public class MemberJdbc {
 			psmt.setString(3, teacher.getT_name());
 			psmt.setString(4, teacher.getT_Pnum());
 			psmt.setString(5, teacher.getHire_date());
+			psmt.setInt(6, teacher.getT_age());
 			int r = psmt.executeUpdate();
 			if (r > 0) {
 				return true;

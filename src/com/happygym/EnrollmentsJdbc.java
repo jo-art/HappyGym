@@ -11,7 +11,7 @@ import java.util.List;
 public class EnrollmentsJdbc {
 	//커넥션 객체 생성 .
 	Connection getConnect() {
-		String url="jdbc:oracle:thin:@localhost:1521:xe";
+		String url="jdbc:oracle:thin:@192.168.0.32:1521:xe";
 		String userId="scott";
 		String userPw="tiger";
 		
@@ -31,9 +31,14 @@ public class EnrollmentsJdbc {
 	public boolean addEnrollProgram(Enrollments enrollments) {
 		System.out.println(enrollments);
 	    Connection conn = getConnect();
-	    String sql = "INSERT INTO enrollments(enrollment_id, MEM_ID, course_id, enrollment_date, status) "
-	               + "SELECT ?, ?, ?, ?, ? FROM tbl_courses WHERE course_id = ?";
-
+	   String sql="INSERT INTO enrollments(enrollment_id, MEM_ID, course_id, enrollment_date, status)  "
+	   		+ "SELECT  ?, ?, ?, ?, ?  "
+	   		+ "FROM dual  "
+	   		+ "WHERE NOT EXISTS ( "
+	   		+ "    SELECT 1 FROM enrollments "
+	   		+ "    WHERE  course_id = ? "
+	   		+ ")";
+	    
 	    try {
 	    	
 	        PreparedStatement psmt = conn.prepareStatement(sql);
@@ -94,7 +99,7 @@ public class EnrollmentsJdbc {
 	public List<Enrollments> getEnrollments(String memID){
 		List<Enrollments> list =new ArrayList<Enrollments>();
 		Connection conn= getConnect();
-		String sql="SELECT * FROM enrollments WHERE MEM_ID = ?";
+		String sql="SELECT DISTINCT * FROM enrollments WHERE MEM_ID = ?";
 		try {
 			PreparedStatement psmt = conn.prepareStatement(sql);
 			psmt.setString(1, memID);
